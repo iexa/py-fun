@@ -3,7 +3,6 @@ from tkinter import ttk
 
 
 class HelloView(tk.Frame):
-  """ geco kis tk cucc """
 
   def __init__(self, parent, *args, **kwargs):
     super().__init__(parent, *args, **kwargs)
@@ -16,7 +15,7 @@ class HelloView(tk.Frame):
     name_entry = ttk.Entry(self, textvariable=self.name)
     change_btn = ttk.Button(self, text='Change', command=self.on_change)
     hello_lbl = ttk.Label(self, textvariable=self.hello_str,
-                  font=('TkDefaultFont', 64), wraplength=600)
+                          font=('TkDefaultFont', 64), wraplength=600)
 
     # layout
     name_lbl.grid(row=0, column=0, sticky=tk.W)

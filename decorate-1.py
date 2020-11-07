@@ -20,6 +20,18 @@ def my_dec(fun):
     return fun(*args)
   return my_wrap
 
+def decorate_param(param):
+  def my_dec(fun):
+    @funcwrap(fun)
+    def my_wrap(*args, **kwargs):
+      print('decorator param', param)
+      print('Pos. args', args)
+      print('Kw. args', kwargs)
+      return fun(*args, **kwargs)
+    return my_wrap
+  return my_dec
+
+
 #@split_sent
 #@lowercase
 def hello():
