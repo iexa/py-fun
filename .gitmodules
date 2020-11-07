@@ -1,0 +1,9 @@
+[submodule "sub/data_science_handbook"]
+	path = sub/data_science_handbook
+	url = https://github.com/jakevdp/PythonDataScienceHandbook.git
+[submodule "sub/musicbot"]
+	path = sub/musicbot
+	url = https://github.com/Just-Some-Bots/MusicBot.git
+[submodule "sub/teek"]
+	path = sub/teek
+	url = https://github.com/Akuli/teek.git
