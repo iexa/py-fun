@@ -7,3 +7,9 @@
 [submodule "sub/teek"]
 	path = sub/teek
 	url = https://github.com/Akuli/teek.git
+[submodule "sub/guizero"]
+	path = sub/guizero
+	url = https://github.com/lawsie/guizero
+[submodule "sub/layoutx"]
+	path = sub/layoutx
+	url = https://github.com/Bomberus/LayoutX
