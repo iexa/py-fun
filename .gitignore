@@ -1,5 +1,9 @@
+# python superfluous stuff
+__pycache__
 __pypackages__
+.venv
 .pdm.toml
+
 
 .cache
 node_modules
