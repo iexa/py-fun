@@ -1,5 +1,5 @@
 import pygame
-from models import GameObj
+from models import GameObj, Ship
 from pygame.image import load
 from pathlib import Path
 import logging as log
@@ -10,7 +10,7 @@ log.basicConfig(level=log.DEBUG, format='%(levelname)s: %(message)s')
 
 def load_sprite(name: str, with_alpha=True):
     file = Path(__file__).parent / f'assets/{name}.png'
-    sprite = load(file) # or file.resolve()
+    sprite = load(file.resolve()) # or file.resolve()
     if with_alpha:
         return sprite.convert_alpha()
     return sprite.convert()
@@ -22,11 +22,11 @@ class Asteroids:
         pygame.init()
         pygame.display.set_caption('Asteroidzzz')
         self.scr = pygame.display.set_mode((800, 600))
+        self.clock = pygame.time.Clock()
         self.background = load_sprite('space', False)
         self.collision_count = 0
 
-        sprite = load_sprite('spaceship')
-        self.ship = GameObj((400, 300), sprite, (0,0))
+        self.ship = Ship((400, 300), load_sprite('spaceship'))
         sprite = load_sprite('asteroid')
         self.rock = GameObj((50, 300), sprite, (1,0))
 
@@ -39,11 +39,15 @@ class Asteroids:
 
 
     def _handle_input(self):
+        is_key_pressed = pygame.key.get_pressed()
         for evt in pygame.event.get(): # queue
             # log.info(evt)
-            if evt.type == pygame.QUIT or \
-            (evt.type == pygame.KEYDOWN and evt.key == pygame.K_ESCAPE):
+            if evt.type == pygame.QUIT or is_key_pressed[pygame.K_ESCAPE]:
                 quit()
+        if is_key_pressed[pygame.K_RIGHT]:
+             self.ship.rotate(clockwise=True)
+        elif is_key_pressed[pygame.K_LEFT]:
+            self.ship.rotate(clockwise=False)
 
 
     def _game_logic(self):
@@ -61,3 +65,5 @@ class Asteroids:
         if self.ship.collides_with(self.rock):
             self.collision_count += 1
             log.info(f'{self.collision_count=}')
+
+        self.clock.tick(30) # set framerate
