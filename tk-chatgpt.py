@@ -11,10 +11,8 @@ import openai
 from openai.error import AuthenticationError
 import os
 import string
-from async_tkinter_loop import async_handler, async_mainloop
+from async_tkinter_loop import async_handler, async_mainloop, _get_event_loop
 
-# async_tkinter_loop does not check for closure of main window thus some errors
-# when exiting the app... not critical, leave it for now
 
 class GPT():
 	_apikey = ''
@@ -80,6 +78,7 @@ root.geometry("700x480")
 root.minsize(500, 380)
 #root.iconbitmap("ai_lt.ico")
 
+
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("dark-blue")
 font_main = ctk.CTkFont(family="Roboto", size=16)
@@ -120,7 +119,13 @@ btn_api.grid(row=0, column=2, padx=10)
 
 
 if __name__ == '__main__':
-	async_mainloop(root)
-
-		
+	# fix tkinter errors coming from event loop by shutting down the event loop
+	# once window is closed. this also would result in a RuntimeError, ignore that too
+	loop = _get_event_loop()
+	#print(loop)
+	try:
+		root.protocol("WM_DELETE_WINDOW", lambda: loop.stop())
+		async_mainloop(root)
+	except RuntimeError:
+		pass
 		

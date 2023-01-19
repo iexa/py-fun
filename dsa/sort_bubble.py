@@ -9,7 +9,7 @@ def bubble_sort(lst):
 		return lst
 	unsorted_idx = len(lst) - 1
 	sort_finished = False
-	
+
 	while not sort_finished:
 		sort_finished = True
 		for i in range(unsorted_idx):
