@@ -23,7 +23,7 @@ def rename_files(list_of_new_names_file, existing_files_glob, add_prefix_nrs: bo
       x = ''.join(map(lambda x: '' if x in "\"“”?':/;,!-_&^%$#@*><)(][" else x, x))
       return (re.sub(r'\s+', ' ', x)).strip()
     new_names.append(
-      f"{str(nr).zfill(DIGITS) if add_prefix_nrs else ''} {prettifyname(name.lower())}")
+      f"{str(nr).zfill(DIGITS)+' ' if add_prefix_nrs else ''}{prettifyname(name.lower())}")
 
   # get list of files and order them
   files = [x for x in root.glob(existing_files_glob)]
