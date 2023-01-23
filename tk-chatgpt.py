@@ -27,7 +27,6 @@ class GPT():
 		#print(entry.get())
 		tmain.insert(tk.END, f"\n ⏳ {entry.get()}")
 		tmain.see(tk.END)  # scroll to end always
-		cls.clear_entry()
 		openai.api_key = cls._apikey
 		try:
 			resp = await openai.Completion.acreate(
@@ -36,6 +35,8 @@ class GPT():
 			tmain.insert(tk.END, f"\n{resp.choices[0].text.strip()}\n")
 		except AuthenticationError:
 			tmain.insert(tk.END, "\n\nAPI key is invalid! Check it or get a new one.\n\n")
+		finally:
+			cls.clear_entry()
 		tmain.see(tk.END) 
 		
 	@classmethod
