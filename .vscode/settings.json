@@ -23,5 +23,6 @@
     "commandCenter.border": "#15202b99"
   },
   "peacock.color": "#42b883",
-  "python.analysis.typeCheckingMode": "off"
+  "python.analysis.typeCheckingMode": "off",
+  "python.linting.enabled": false
 }
