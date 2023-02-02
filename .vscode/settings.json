@@ -24,5 +24,7 @@
   },
   "peacock.color": "#42b883",
   "python.analysis.typeCheckingMode": "off",
-  "python.linting.enabled": false
+  "python.linting.enabled": true,
+  "python.linting.mypyEnabled": false,
+  "python.linting.flake8Enabled": true
 }

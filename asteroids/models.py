@@ -41,20 +41,23 @@ class GameObj:
             self.pos = self._wrap_pos(surface)
 
     def collides_with(self, other: 'GameObj'):
+        # TODO: https://stackoverflow.com/questions/57886086/pygame-sprite-transparency-collision
         distance = self.pos.distance_to(other.pos)
         return distance < self.radius + other.radius
 
 
 class Ship(GameObj):
-    """ ships also shoot bullets """
+    """ ship also shoots bullets """
     ROTATION_SPEED = 3
     ACCELERATION = 0.3
     BULLET_SPEED = 5
+    LIVES = 3
 
-    def __init__(self, pos: Vector2, bullets):
+    def __init__(self, pos: Vector2, bullets, lives=LIVES):
         self.dir = Vector2(DIR_UP)
         self.bullets = bullets
-        super().__init__(pos, load_sprite('spaceship'), Vector2(0))
+        self.lives = lives
+        super().__init__(pos, load_sprite('spaceship2'), Vector2(0))
 
     def rotate(self, clockwise=True):
         sign = 1 if clockwise else -1
@@ -69,17 +72,25 @@ class Ship(GameObj):
         self.velocity -= self.dir * self.ACCELERATION
 
     def shoot(self):
+        if not self.lives: # no lives left, do not draw anything
+            return
         velocity = self.dir * self.BULLET_SPEED + self.velocity
         bullet = Bullet(self.pos, velocity)
         self.bullets.append(bullet)
 
     def draw(self, surface: Surface):
+        if not self.lives: # no lives left, do not draw anything
+            return
         angle = self.dir.angle_to(DIR_UP)
         rotated_surface = rotozoom(self.sprite, angle, 1.0)
         rotated_surface_size = Vector2(rotated_surface.get_size())
 
         blit_pos = self.pos - rotated_surface_size * 0.5
         surface.blit(rotated_surface, blit_pos)
+
+    # def collides_with(self, other: 'GameObj'):
+    #     collided = super().collides_with(other)
+    #     return collided
 
 
 class Rock(GameObj):

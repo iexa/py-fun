@@ -1,3 +1,4 @@
+""" simple asteroids game - good ideas with pygame """
 import logging as log
 import pygame
 
@@ -7,6 +8,7 @@ from models import Ship, Rock, load_sprite
 log.basicConfig(level=log.DEBUG, format='%(levelname)s: %(message)s')
 
 
+# TODO: implement an opening screen
 class Asteroids:
     """ Main Game """
     def __init__(self):
@@ -37,6 +39,7 @@ class Asteroids:
         for evt in pygame.event.get():  # queue
             if evt.type == pygame.QUIT or is_key_pressed[pygame.K_ESCAPE]:
                 quit()
+            # if using is_key_pressed that means shooting until key is pressed not once only
             if evt.type == pygame.KEYDOWN and evt.key == pygame.K_SPACE:
                 self.ship.shoot()
         if is_key_pressed[pygame.K_RIGHT]:
@@ -47,17 +50,35 @@ class Asteroids:
             self.ship.accelerate()
         elif is_key_pressed[pygame.K_DOWN]:
             self.ship.decelerate()
-            
 
     def _game_logic(self):
         for obj in self.game_objects:
             obj.move(self.scr)
 
-        # remove bullets outside scr
+        # remove bullets outside screen
         rect = self.scr.get_rect()
         for bullet in self.bullets[:]:  # cant remove items while iterating over
             if not rect.collidepoint(bullet.pos):
                 self.bullets.remove(bullet)
+
+        # bullet meets rock? (remove both first)
+        for bullet in self.bullets[:]:
+            for rock in self.rocks[:]:
+                if rock.collides_with(bullet):
+                    self.rocks.remove(rock)
+                    self.bullets.remove(bullet)
+                    break  # if 2+ rocks overlap remove only one, not all...
+
+        # ship hit by rock?
+        # TODO: multiple lifes + show lives left
+        if self.ship.lives:
+            for rock in self.rocks:
+                if rock.collides_with(self.ship):
+                    self.rocks.remove(rock)
+                    self.ship.lives = max(self.ship.lives-1, 0)
+                    log.info(f'{self.ship.lives=}')
+                    #TODO: mark that life decreased and be invincible for a second
+                    break
 
     def _draw(self):
         # self.scr.fill((0,0,255))
@@ -69,6 +90,6 @@ class Asteroids:
         for rock in self.rocks:
             if self.ship.collides_with(rock):
                 self.collision_count += 1
-                log.info(f'{self.collision_count=}')
+                log.info(f'{self.ship.lives=}')
 
         self.clock.tick(30)  # set framerate
