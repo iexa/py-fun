@@ -5,6 +5,7 @@ from pygame.math import Vector2
 from pygame.transform import rotozoom
 from pygame import Surface
 from pygame.image import load
+from pygame.mixer import Sound
 
 
 DIR_UP = Vector2(0, -1)
@@ -14,6 +15,11 @@ def load_sprite(name: str, with_alpha=True):
     file = Path(__file__).parent / f'assets/{name}.png'
     sprite = load(file.resolve())  # or file or file.resolve()
     return sprite.convert_alpha() if with_alpha else sprite.convert()
+
+
+def load_sound(name: str) -> Sound:
+    file = Path(__file__).parent / f'assets/{name}.ogg'
+    return Sound(file)
 
 
 class GameObj:
@@ -57,11 +63,15 @@ class Ship(GameObj):
         self.dir = Vector2(DIR_UP)
         self.bullets = bullets
         self.lives = lives
+        self.snd_bullet = load_sound('laser')
         super().__init__(pos, load_sprite('spaceship2'), Vector2(0))
 
     @property
     def is_alive(self):
         return self.lives > 0
+
+    def decrease_lives(self):
+        self.lives = max(self.lives-1, 0)
 
     def rotate(self, clockwise=True):
         sign = 1 if clockwise else -1
@@ -81,6 +91,7 @@ class Ship(GameObj):
         velocity = self.dir * self.BULLET_SPEED + self.velocity
         bullet = Bullet(self.pos, velocity)
         self.bullets.append(bullet)
+        self.snd_bullet.play()
 
     def draw(self, surface: Surface):
         if not self.lives:  # no lives left, do not draw anything
@@ -104,6 +115,7 @@ class Rock(GameObj):
     MIN_SPEED = 1
     MAX_SPEED = 3
     rocks = []  # rocks container from main game, passed in from there upon init
+    snd_boom = load_sound('boom')
 
     def __init__(self, pos: Vector2, size=3):
         _scale_map = {3: 1.0, 2: 0.5, 1: 0.25}
@@ -122,6 +134,9 @@ class Rock(GameObj):
             if pos.distance_to(ship_pos) > cls.MIN_START_GAP:
                 break
         return Rock(pos)
+
+    def play_boom_sound(self):
+        self.snd_boom.play()
 
     def split(self):
         if self.size == 1:

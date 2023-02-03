@@ -71,6 +71,7 @@ class Asteroids:
             for rock in self.rocks[:]:
                 if rock.collides_with(bullet):
                     self.rocks.remove(rock)
+                    rock.play_boom_sound()
                     rock.split()
                     self.bullets.remove(bullet)
                     break  # if 2+ rocks overlap remove only one, not all...
@@ -80,8 +81,9 @@ class Asteroids:
         if self.ship.is_alive:
             for rock in self.rocks:
                 if rock.collides_with(self.ship):
+                    rock.play_boom_sound()
                     self.rocks.remove(rock)
-                    self.ship.lives = max(self.ship.lives-1, 0)
+                    self.ship.decrease_lives()
                     log.info(f'{self.ship.lives=}')
                     # log.info(f'{self.ship.is_alive=}')
                     # TODO: mark that life decreased and be invincible for a second
@@ -93,10 +95,5 @@ class Asteroids:
         for obj in self.game_objects:
             obj.draw(self.scr)
         pygame.display.flip()
-
-        for rock in self.rocks:
-            if self.ship.collides_with(rock):
-                self.collision_count += 1
-                log.info(f'{self.ship.lives=}')
 
         self.clock.tick(30)  # set framerate
