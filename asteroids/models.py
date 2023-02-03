@@ -59,6 +59,10 @@ class Ship(GameObj):
         self.lives = lives
         super().__init__(pos, load_sprite('spaceship2'), Vector2(0))
 
+    @property
+    def is_alive(self):
+        return self.lives > 0
+
     def rotate(self, clockwise=True):
         sign = 1 if clockwise else -1
         angle = self.ROTATION_SPEED * sign
@@ -72,14 +76,14 @@ class Ship(GameObj):
         self.velocity -= self.dir * self.ACCELERATION
 
     def shoot(self):
-        if not self.lives: # no lives left, do not draw anything
+        if not self.lives:  # no lives left, do not draw anything
             return
         velocity = self.dir * self.BULLET_SPEED + self.velocity
         bullet = Bullet(self.pos, velocity)
         self.bullets.append(bullet)
 
     def draw(self, surface: Surface):
-        if not self.lives: # no lives left, do not draw anything
+        if not self.lives:  # no lives left, do not draw anything
             return
         angle = self.dir.angle_to(DIR_UP)
         rotated_surface = rotozoom(self.sprite, angle, 1.0)
@@ -89,6 +93,8 @@ class Ship(GameObj):
         surface.blit(rotated_surface, blit_pos)
 
     # def collides_with(self, other: 'GameObj'):
+    #     if not self.lives:
+    #         return
     #     collided = super().collides_with(other)
     #     return collided
 
@@ -97,18 +103,32 @@ class Rock(GameObj):
     MIN_START_GAP = 200
     MIN_SPEED = 1
     MAX_SPEED = 3
+    rocks = []  # rocks container from main game, passed in from there upon init
 
-    def __init__(self, surface: Surface, ship_pos: Vector2):
-        while True:  # do not be too close to ship
-            pos = Vector2(randrange(surface.get_width()),
-                          randrange(surface.get_height()))
-            if pos.distance_to(ship_pos) > self.MIN_START_GAP:
-                break
-
+    def __init__(self, pos: Vector2, size=3):
+        _scale_map = {3: 1.0, 2: 0.5, 1: 0.25}
+        self.size = size
+        sprite = rotozoom(load_sprite('asteroid'), 0, _scale_map[size])
         speed = randint(self.MIN_SPEED, self.MAX_SPEED)
         angle = randint(0, 360)
         velocity = Vector2(speed, 0).rotate(angle)
-        super().__init__(pos, load_sprite('asteroid'), velocity)
+        super().__init__(pos, sprite, velocity)
+
+    @classmethod
+    def create_random(cls, surface: Surface, ship_pos: Vector2):
+        while True:  # do not be too close to ship
+            pos = Vector2(randrange(surface.get_width()),
+                          randrange(surface.get_height()))
+            if pos.distance_to(ship_pos) > cls.MIN_START_GAP:
+                break
+        return Rock(pos)
+
+    def split(self):
+        if self.size == 1:
+            return
+        # setting class attr, if using self then only instance changes
+        type(self).rocks.append(Rock(self.pos, self.size-1))
+        type(self).rocks.append(Rock(self.pos, self.size-1))
 
 
 class Bullet(GameObj):
