@@ -86,7 +86,7 @@ class Ship(GameObj):
         self.velocity -= self.dir * self.ACCELERATION
 
     def shoot(self):
-        if not self.lives:  # no lives left, do not draw anything
+        if not self.is_alive:  # no lives left, do not draw anything
             return
         velocity = self.dir * self.BULLET_SPEED + self.velocity
         bullet = Bullet(self.pos, velocity)
@@ -94,7 +94,7 @@ class Ship(GameObj):
         self.snd_bullet.play()
 
     def draw(self, surface: Surface):
-        if not self.lives:  # no lives left, do not draw anything
+        if not self.is_alive:  # no lives left, do not draw anything
             return
         angle = self.dir.angle_to(DIR_UP)
         rotated_surface = rotozoom(self.sprite, angle, 1.0)
