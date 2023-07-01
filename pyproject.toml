@@ -21,6 +21,7 @@ homepage = ""
 [tool.pdm]
 [tool.pdm.dev-dependencies]
 dev = [
+    "pylint>=2.17.4",
 ]
 
 [build-system]
