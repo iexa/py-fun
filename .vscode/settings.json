@@ -26,6 +26,7 @@
   "python.linting.flake8Enabled": false,
   "python.linting.pylintEnabled": true,
   "python.linting.pylintArgs": [
-    "--disable=C0111"
+    "--disable=C0111",
+    "--extension-pkg-whitelist=pygame"
   ]
 }
