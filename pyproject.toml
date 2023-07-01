@@ -24,6 +24,9 @@ dev = [
     "pylint>=2.17.4",
 ]
 
+[tool.pdm.scripts]
+asteroids = "python asteroids"
+
 [build-system]
 requires = ["pdm-pep517"]
 build-backend = "pdm.pep517.api"

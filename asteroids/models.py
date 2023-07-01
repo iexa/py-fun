@@ -4,6 +4,7 @@ from random import randrange, randint
 from pygame.math import Vector2
 from pygame.transform import rotozoom
 from pygame import Surface
+from pygame import Color
 from pygame.image import load
 from pygame.mixer import Sound
 
@@ -21,6 +22,14 @@ def load_sound(name: str) -> Sound:
     file = Path(__file__).parent / f'assets/{name}.ogg'
     return Sound(file)
 
+
+def print_text(surface_base, text, font, color=Color("red")):
+    text_surface = font.render(text, True, color)
+    rect = text_surface.get_rect()
+    rect.center = Vector2(surface_base.get_size()) / 2
+    surface_base.blit(text_surface, rect)
+    
+    
 
 class GameObj:
     """ base game objects for all sprites """

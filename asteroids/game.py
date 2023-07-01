@@ -2,13 +2,15 @@
 import logging as log
 import pygame
 
-from models import Ship, Rock, load_sprite
+from models import Ship, Rock, load_sprite, print_text
 
 
 log.basicConfig(level=log.DEBUG, format='%(levelname)s: %(message)s')
 
 
-# TODO: implement an opening screen
+# TODO: implement an opening / closing screen
+# TODO: implement scoring system
+# TODO: allow replay?
 class Asteroids:
     """ Main Game """
     def __init__(self):
@@ -17,6 +19,8 @@ class Asteroids:
         self.scr = pygame.display.set_mode((800, 600))
         self.clock = pygame.time.Clock()
         self.background = load_sprite('space', False)
+        self.font = pygame.font.SysFont("comicsans", 64)
+        self.message = ""
         self.collision_count = 0
 
         self.bullets = []
@@ -85,15 +89,24 @@ class Asteroids:
                     self.rocks.remove(rock)
                     self.ship.decrease_lives()
                     log.info(f'{self.ship.lives=}')
+                    if not self.ship.is_alive:
+                        self.message = "GAME OVER."
                     # log.info(f'{self.ship.is_alive=}')
                     # TODO: mark that life decreased and be invincible for a second
                     break
+
+        if not self.rocks and self.ship.is_alive:
+            self.message = "YOU WON!"
 
     def _draw(self):
         # self.scr.fill((0,0,255))
         self.scr.blit(self.background, (0, 0))
         for obj in self.game_objects:
             obj.draw(self.scr)
+            
+        if self.message:
+            print_text(self.scr, self.message, self.font)
+
         pygame.display.flip()
 
         self.clock.tick(30)  # set framerate
