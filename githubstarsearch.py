@@ -8,7 +8,7 @@
     
     Oh, important: no dependencies, besides python stdlib.
     
-    TODO: add token use as if you have more than 6k stars you'll be reate limited
+    TODO: add token use as if you have more than 6k stars you'll be rate limited
 """
 
 from urllib.request import urlopen
@@ -22,7 +22,6 @@ import argparse
 # TODO: arguments: -u user  -f force cache rebuild
 # TODO: .status = 429 rate limited, header Retry-After secs how long to wait
 
-
 __version__ = "v0.1.1, 2023/jun by iexa"
 DEFAULT_GITHUB_USER = "iexa"
 GITHUB_URL = "https://api.github.com/users/[user]/starred?per_page=100&page="
@@ -30,6 +29,7 @@ CACHE_STALE_TIME_SECS = 7*24*3600
 CACHE_FILE = Path.home() / ".githubstarsearch"
 CACHE_FILE_HEADER = f"HELLOOO from githubstarsearch cache {__version__}\n"
 
+# file format: pickled + zipped, data + searches stored
 # description, topics array, stargazers_count, homepage
 # full_name (https://github.com/+), created_at, pushed_at, stargazers_count, language
 
